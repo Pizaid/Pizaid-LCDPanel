@@ -7,3 +7,14 @@
 # License:  2-Clause BSD License
 # Created:  2014-07-07
 #
+
+from lcdserver import LCDServer
+
+def create_lcdserver():
+    return LCDServer()
+
+def start():
+    print("Hello Pizaid!")
+    print("This program is a server to display the status of RaspberryPi.")
+    server = create_lcdserver()
+    server.run()
