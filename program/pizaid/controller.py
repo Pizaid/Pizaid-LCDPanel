@@ -10,19 +10,26 @@
 
 import dbus
 from network import PizaidNetwork
+from storage import PizaidStorage
+from power   import PizaidPower
 
-
-class ControllerComm:
+class PizaidControllerComm:
     def __init__(self):
         self.bus = dbus.SessionBus()
     def network(self):
         obj = self.bus.get_object('com.pizaid.Controller',
                                   '/com/pizaid/controller/Network')
         return PizaidNetwork(obj)
+    def storage(self):
+        obj = self.bus.get_object('com.pizaid.Controller',
+                                  '/com/pizaid/controller/Storage')
+        return PizaidStorage(obj)
+    def power(self):
+        obj = self.bus.get_object('com.pizaid.Controller',
+                                  '/com/pizaid/controller/Power')
+        return PizaidPower(obj)
 
-#     def storage(self):
-#         return self.bus.get_object('com.pizaid.Controller',
-#                                    '/com/pizaid/controller/Storage')
+
 #     def power(self):
 #         return self.bus.get_object('com.pizaid.Controller',
 #                                    '/com/pizaid/controller/Power')

@@ -8,15 +8,21 @@
 #
 
 import time
-from controller import ControllerComm
+from controller import PizaidControllerComm
 
 class LCDServer(object):
-    def __init__(self):
-        pass
     def run(self):
         print("running...")
-        controller = ControllerComm()
+        controller = PizaidControllerComm()
         network = controller.network()
+        storage = controller.storage()
+        power   = controller.power()
         print("IPv4: " + network.get_ipv4())
+        print("Percent: " + str(power.get_battery_percent()))
+        print("--Names--")
+        for name in storage.get_names():
+            print(name)
+            print("capacity: " + str(storage.get_capacity_kb(name)))
+            print("usage: " + str(storage.get_usage_kb(name)))
         time.sleep(10)
-        
+
