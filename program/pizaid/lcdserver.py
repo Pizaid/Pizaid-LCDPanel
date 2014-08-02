@@ -8,21 +8,30 @@
 #
 
 import time
-from controller import PizaidControllerComm
+from dbusserver import DBusServer
+from ioserver import IOServer
 
-class LCDServer(object):
+class LCDServer:
     def run(self):
-        print("running...")
-        controller = PizaidControllerComm()
-        network = controller.network()
-        storage = controller.storage()
-        power   = controller.power()
-        print("IPv4: " + network.get_ipv4())
-        print("Percent: " + str(power.get_battery_percent()))
-        print("--Names--")
-        for name in storage.get_names():
-            print(name)
-            print("capacity: " + str(storage.get_capacity_kb(name)))
-            print("usage: " + str(storage.get_usage_kb(name)))
-        time.sleep(10)
+        self.ioserver = IOServer()
+        self.dbusserver = DBusServer()
+        self.ioserver.start()
+        self.dbusserver.start()
+        print("Run io and dbus server")
+        print("Wait to stop ioserver")
+        self.ioserver.join()
+#         self.dbusserver.stop()
+#         print("running...")
+#         controller = PizaidControllerComm()
+#         network = controller.network()
+#         storage = controller.storage()
+#         power   = controller.power()
+#         print("IPv4: " + network.get_ipv4())
+#         print("Percent: " + str(power.get_battery_percent()))
+#         print("--Names--")
+#         for name in storage.get_names():
+#             print(name)
+#             print("capacity: " + str(storage.get_capacity_kb(name)))
+#             print("usage: " + str(storage.get_usage_kb(name)))
+#         time.sleep(10)
 
