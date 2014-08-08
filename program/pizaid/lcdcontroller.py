@@ -9,22 +9,30 @@
 #
 
 from state import initial_state
+from threading import Lock
 
 class LCDController:
     def __init__(self):
+        self._lock = Lock()
         self._state = initial_state()
     def up(self):
-        self._state = self._state.up()
+        with self._lock:
+            self._state = self._state.up()
     def down(self):
-        self._state = self._state.down()
+        with self._lock:
+            self._state = self._state.down()
     def left(self):
-        self._state = self._state.left()
+        with self._lock:
+            self._state = self._state.left()
     def right(self):
-        self._state = self._state.right()
+        with self._lock:
+            self._state = self._state.right()
     def center(self):
-        self._state = self._state.center()
+        with self._lock:
+            self._state = self._state.center()
     def updateDisplay(self):
-        self._state = self._state.updateDisplay()
+        with self._lock:
+            self._state = self._state.updateDisplay()
 
 _controller = LCDController()
 def get_lcdcontroller():

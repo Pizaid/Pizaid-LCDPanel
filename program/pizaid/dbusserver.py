@@ -9,9 +9,10 @@
 #
 
 import threading
+from utils import tprint
 
 class DBusServer(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
     def run(self):
-        print("start dbusserver")
+        tprint("start dbusserver")

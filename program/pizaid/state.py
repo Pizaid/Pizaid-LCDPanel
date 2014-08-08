@@ -9,10 +9,27 @@
 #
 
 from controller import get_controllercomm
+from utils import tprint
+# import RPi.GPIO as GPIO
+import time
+# L_pin = 17
+# #U_pin = 22
+# R_pin = 14
+# D_pin = 15
+
+# bus = smbus.SMBus(1)
+# address = 0x04
+
+# GPIO.setmode(GPIO.BCM)
+# GPIO.setup(L_pin, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+# #GPIO.setup(U_pin, GPIO.IN)
+# GPIO.setup(R_pin, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+# GPIO.setup(D_pin, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 def initial_state():
-    return LogoState()
+    return HomeState()
 
+  
 class State:
     def updateDisplay(self):
         return self
@@ -27,32 +44,80 @@ class State:
     def center(self):
         return self
 
-class LogoState(State):
+class HomeState(State):
     def __init__(self):
-        print("LogoState")
-        print("== Pizaid == ")
+        tprint("HomeState")
+        tprint("== Pizaid ==")
+        tprint(time.strftime("%d/%m/%Y %H:%M:%S"))
+        tprint("\033[3A")
     def updateDisplay(self):
-        print("LogoState: update")
+        tprint("HomeState: update        ")
+        tprint(time.strftime("%d/%m/%Y %H:%M:%S"))
+        tprint("\033[3A")
         return self
     def up(self):
-        print("LogoState: up")
-        return NetworkState()
+        tprint("HomeState: up        ")
+        tprint(time.strftime("%d/%m/%Y %H:%M:%S"))
+        tprint("\033[3A")
+        return BatteryState()
     def down(self):
-        print("LogoState: down")
+        tprint("HomeState: down        ")
+        tprint(time.strftime("%d/%m/%Y %H:%M:%S"))
+        tprint("\033[3A")
         return NetworkState()
 
 class NetworkState(State):
     def __init__(self):
-        print("NetworkState")
+        tprint("NetworkState        ")
         self.network = get_controllercomm().network()
-        print(self.network.get_ipv4())
+        tprint(self.network.get_ipv4() + "        ")
+        tprint("\033[3A")
     def updateDisplay(self):
-        print("NetworkState: update")
-        print(self.network.get_ipv4())
+        tprint("NetworkState: update        ")
+        tprint(self.network.get_ipv4() + "        ")
+        tprint("\033[3A")
         return self
     def up(self):
-        print("NetworkState: up")
-        return LogoState()
+        tprint("NetworkState: up        ")
+        tprint("\033[2A")
+        return HomeState()
     def down(self):
-        print("NetworkState: down")
-        return LogoState()
+        tprint("NetworkState: down        ")
+        tprint("\033[2A")
+        return StorageState()
+
+class StorageState(State):
+    def __init__(self):
+        tprint("Storage State        ")
+        # bus.write_i2c_block_data(address, 254, [1])
+        # bus.write_i2c_block_data(address, 77, [101, 115, 115, 105, 51])
+        tprint(" "*30)
+        tprint("\033[3A")
+    def up(self):
+        return NetworkState()
+    def down(self):
+        return BatteryState()
+    def right(self):
+        return StorageDetail()
+
+class StorageDetail(State):
+    def __init__(self):
+        tprint("Storage Detail        ")
+        tprint(" "*30)
+        # bus.write_i2c_block_data(address, 254, [1])
+        # bus.write_i2c_block_data(address, 77, [101, 115, 115, 105, 52])
+        tprint("\033[3A")
+    def left(self):
+        return StorageState()
+
+class BatteryState(State):
+    def __init__(self):
+        tprint("Battery State        ")
+        tprint(" "*30)
+        # bus.write_i2c_block_data(address, 254, [1])
+        # bus.write_i2c_block_data(address, 77, [101, 115, 115, 105, 53])
+        tprint("\033[3A")
+    def up(self):
+        return StorageState()
+    def down(self):
+        return HomeState()

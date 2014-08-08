@@ -8,6 +8,10 @@
 # Created:  2014-08-02
 #
 
+from __future__ import print_function
+from threading import Lock
+import sys
+
 def getch():
     f = getch_func()
     return f()
@@ -50,3 +54,11 @@ class _GetchWindows:
     def __call__(self):
         import msvcrt
         return msvcrt.getch()
+
+_tprint_lock = Lock()
+def tprint(*args, **kwargs):
+    global _tprint_lock
+    string = ''.join([i for i in args])
+    with _tprint_lock:
+        sys.stdout.write(string + "\r\n")
+#         print(*args, **kwargs)
