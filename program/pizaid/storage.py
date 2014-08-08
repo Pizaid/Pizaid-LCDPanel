@@ -8,19 +8,18 @@
 # Created:  2014-07-18
 #
 
-import dbus
-
 class PizaidStorage:
-    def __init__(self, dbus_object):
-        self.obj = dbus_object
-        self.properties = dbus.Interface(self.obj, 'com.pizaid.storage.Properties')
+    def __init__(self, client):
+        self.client = client
     def get_names(self):
-        return self.properties.Get_names()
+        return self.client.storage_names()
     def get_capacity_kb(self, name):
-        return self.properties.Get_capacity_kb(name)
+        return self.client.storage_capacity_kb(name)
     def get_usage_kb(self, name):
-        return self.properties.Get_usage_kb(name)
+        return self.client.storage_usage_kb(name)
     def get_usage_percent(self, name):
-        return self.properties.Get_percent_kb(name)
+        return self.client.storage_usage_percent(name)
     def is_sync(self):
-        return self.properties.Is_sync()
+        return self.client.storage_is_sync()
+    def join(self, name, device):
+        return self.client.storage_join(name, device)

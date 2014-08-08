@@ -8,14 +8,10 @@
 # Created:  2014-07-18
 #
 
-import dbus
-
 class PizaidPower:
-    def __init__(self, dbus_object):
-        self.obj = dbus_object
-        self.properties = dbus.Interface(self.obj,
-                                         'com.pizaid.power.Properties')
+    def __init__(self, client):
+        self.client = client
     def get_battery_percent(self):
-        return self.properties.Get_battery_percent()
+        return self.client.power_battery_percent()
     def is_ac_plugin(self):
-        return self.properties.Is_ac_plugin()
+        return self.client.power_is_ac_plugin()

@@ -14,9 +14,7 @@ from ioserver import IOServer
 class LCDServer:
     def run(self):
         self.ioserver = IOServer()
-        self.dbusserver = DBusServer()
         self.ioserver.start()
-        self.dbusserver.start()
         print("Run io and dbus server")
         print("Wait to stop ioserver")
         self.ioserver.join()

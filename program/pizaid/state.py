@@ -8,7 +8,7 @@
 # Created:  2014-08-01
 #
 
-from controller import PizaidControllerComm
+from controller import get_controllercomm
 
 def initial_state():
     return LogoState()
@@ -30,6 +30,7 @@ class State:
 class LogoState(State):
     def __init__(self):
         print("LogoState")
+        print("== Pizaid == ")
     def updateDisplay(self):
         print("LogoState: update")
         return self
@@ -43,8 +44,11 @@ class LogoState(State):
 class NetworkState(State):
     def __init__(self):
         print("NetworkState")
+        self.network = get_controllercomm().network()
+        print(self.network.get_ipv4())
     def updateDisplay(self):
         print("NetworkState: update")
+        print(self.network.get_ipv4())
         return self
     def up(self):
         print("NetworkState: up")

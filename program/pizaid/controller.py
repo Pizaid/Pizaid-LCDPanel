@@ -8,45 +8,36 @@
 # Created:  2014-07-12
 #
 
-import dbus
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/gen-py')
+
+from Pizaid import ControllerService
+
+from thrift.transport import TSocket
+from thrift.transport import TTransport
+from thrift.protocol import TBinaryProtocol
+
 from network import PizaidNetwork
 from storage import PizaidStorage
 from power   import PizaidPower
 
-class PizaidControllerComm:
+class ControllerComm:
     def __init__(self):
-        self.bus = dbus.SessionBus()
+        transport = TSocket.TSocket('localhost', 9090)
+        self.transport = TTransport.TBufferedTransport(transport)
+        protocol = TBinaryProtocol.TBinaryProtocol(transport)
+        self.client = ControllerService.Client(protocol)
+        self.transport.open()
     def network(self):
-        obj = self.bus.get_object('com.pizaid.Controller',
-                                  '/com/pizaid/controller/Network')
-        return PizaidNetwork(obj)
+        return PizaidNetwork(self.client)
     def storage(self):
-        obj = self.bus.get_object('com.pizaid.Controller',
-                                  '/com/pizaid/controller/Storage')
-        return PizaidStorage(obj)
+        return PizaidStorage(self.client)
     def power(self):
-        obj = self.bus.get_object('com.pizaid.Controller',
-                                  '/com/pizaid/controller/Power')
-        return PizaidPower(obj)
+        return PizaidPower(self.client)
+    def stop(self):
+        self.transport.close()
 
-
-#     def power(self):
-#         return self.bus.get_object('com.pizaid.Controller',
-#                                    '/com/pizaid/controller/Power')
-
-
-#         self.network = bus.get_object(
-#             'com.pizaid.Controller',
-#             '/com/pizaid/controller/Network')
-#         self.storage = bus.get_object(
-#             'com.pizaid.Controller',
-#             '/com/pizaid/controller/Storage')
-#         self.power = bus.get_object(
-#             'com.pizaid.Controller',
-#             '/com/pizaid/controller/Power')
-
-# bat_interface = dbus.Interface(bat_object,
-# 'org.freedesktop.DBus.Properties')
-# percentage = bat_interface.Get("org.freedesktop.UPower.Device",
-# "Percentage"
-# ).real
+_controller = ControllerComm()
+def get_controllercomm():
+    global _controller
+    return _controller
