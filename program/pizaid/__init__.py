@@ -9,12 +9,13 @@
 #
 
 from lcdserver import LCDServer
+from utils import tprint
 
 def create_lcdserver():
     return LCDServer()
 
 def start():
-    print("Hello Pizaid!")
-    print("This program is a server to display the status of RaspberryPi.")
+    tprint("Hello Pizaid!")
+    tprint("This program is a server to display the status of RaspberryPi.")
     server = create_lcdserver()
     server.run()
