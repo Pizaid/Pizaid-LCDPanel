@@ -12,20 +12,32 @@ import threading
 from utils import getch, tprint
 from lcdcontroller import get_lcdcontroller
 from threading import Timer
+import RPi.GPIO as GPIO
+
+def setupGPIO(pin, handler):
+    pass
+#     GPIO.setup(pin, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+#     GPIO.add_event_detect(pin, GPIO.FALLING)
+#     GPIO.add_event_callback(pin, handler, 100)
+
 
 class IOServer(threading.Thread):
+    uPin = 23
+    lPin = 19
+    rPin = 15
+    dPin = 21
     def __init__(self):
         threading.Thread.__init__(self)
         # tprint(self.currentState)
-        # GPIO.add_event_detect(D_pin, GPIO.FALLING)
-        # GPIO.add_event_callback(D_pin, self.upButtonHandler, 100)
-        # GPIO.add_event_detect(L_pin, GPIO.FALLING)
-        # GPIO.add_event_callback(L_pin, self.leftButtonHandler, 100)
-        # GPIO.add_event_detect(R_pin, GPIO.FALLING)
-        # GPIO.add_event_callback(R_pin, self.rightButtonHandler, 100)
+        GPIO.setmode(GPIO.BCM)
+        setupGPIO(self.uPin, self.upButtonHandler)
+        setupGPIO(self.lPin, self.leftButtonHandler)
+        setupGPIO(self.rPin, self.rightButtonHandler)
+        # setupGPIO(dPin, self.downButtonHandler)
         self.quit = False
         self.lcd = get_lcdcontroller()
         self.timer = Timer(0.5, self.timeoutHandler)
+        
     def run(self):
         tprint("start ioserver")
         self.timer.start()
@@ -49,14 +61,19 @@ class IOServer(threading.Thread):
                 break
             else:
                 tprint("Unknown Command")
+
     def upButtonHandler(self, pin = None):
         self.lcd.up()
+        
     def downButtonHandler(self, pin = None):
         self.lcd.down()
+        
     def leftButtonHandler(self, pin = None):
         self.lcd.left()
+
     def rightButtonHandler(self, pin = None):
         self.lcd.right()
+
     def timeoutHandler(self):
         self.lcd.updateDisplay()
         if not self.quit:
