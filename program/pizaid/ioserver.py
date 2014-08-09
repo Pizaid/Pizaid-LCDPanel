@@ -15,17 +15,16 @@ from threading import Timer
 import RPi.GPIO as GPIO
 
 def setupGPIO(pin, handler):
-    pass
-#     GPIO.setup(pin, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-#     GPIO.add_event_detect(pin, GPIO.FALLING)
-#     GPIO.add_event_callback(pin, handler, 100)
-
+    GPIO.setup(pin, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    GPIO.add_event_detect(pin, GPIO.FALLING, callback = handler, bouncetime=200)
 
 class IOServer(threading.Thread):
-    uPin = 23
-    lPin = 19
-    rPin = 15
-    dPin = 21
+    # 6 7 8 9 
+    # l d u r
+    uPin = 15 # u <-> d
+    lPin = 27 # l <-r
+    rPin = 14
+    dPin = 18
     def __init__(self):
         threading.Thread.__init__(self)
         # tprint(self.currentState)
@@ -33,7 +32,7 @@ class IOServer(threading.Thread):
         setupGPIO(self.uPin, self.upButtonHandler)
         setupGPIO(self.lPin, self.leftButtonHandler)
         setupGPIO(self.rPin, self.rightButtonHandler)
-        # setupGPIO(dPin, self.downButtonHandler)
+        setupGPIO(self.dPin, self.downButtonHandler)
         self.quit = False
         self.lcd = get_lcdcontroller()
         self.timer = Timer(0.5, self.timeoutHandler)
